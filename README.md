@@ -5,6 +5,7 @@ Browser-first PDF studio: fill a form, tweak branding, upload a logo or custom f
 [![Flutter](https://img.shields.io/badge/flutter-3.32.4-blue?logo=flutter)](https://flutter.dev)
 [![Tests](https://img.shields.io/badge/tests-pass-brightgreen?logo=githubactions)](./.github/workflows/gh-pages.yml)
 [![Coverage](https://img.shields.io/badge/coverage-~30%25-yellow)](coverage/lcov.info)
+[![Live](https://img.shields.io/badge/demo-GitHub%20Pages-0A7EA4?logo=github)](https://allingaming.github.io/structured_pdf_builder/)
 
 ## What it does
 - Form-driven content: title, subtitle, intro, bullets, table, notes, QR/link.
