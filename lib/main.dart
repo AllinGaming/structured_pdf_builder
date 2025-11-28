@@ -426,84 +426,95 @@ class _PdfStudioHomeState extends State<PdfStudioHome> {
       _pdfColor(_accentColor.withAlpha((opacity * 255).round()));
 
   Future<Uint8List> _generatePdf(pdf.PdfPageFormat format) async {
-    final fonts = await _fonts;
-    final doc = pw.Document(
-      title: _titleController.text,
-      author: _authorController.text,
-      subject: _subtitleController.text,
-    );
-
-    final bullets = _bulletController.text
-        .split('\n')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
-
-    final paragraphs = _summaryController.text
-        .split(RegExp(r'\n\n+'))
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
-
-    final tableRows = _tableController.text
-        .split('\n')
-        .map((row) => row.split(',').map((cell) => cell.trim()).toList())
-        .where((row) => row.where((cell) => cell.isNotEmpty).isNotEmpty)
-        .toList();
-
-    final qrValue = _qrController.text.trim();
-    final accent = _pdfColor(_accentColor);
-    final margin = _marginMm * pdf.PdfPageFormat.mm;
-
-    pw.Widget? logo;
-    if (_logoBytes != null) {
-      final image = pw.MemoryImage(_logoBytes!);
-      logo = pw.Container(
-        padding: const pw.EdgeInsets.all(4),
-        height: 48,
-        child: pw.Image(image, fit: pw.BoxFit.contain),
+    try {
+      final fonts = await _fonts;
+      final doc = pw.Document(
+        title: _titleController.text,
+        author: _authorController.text,
+        subject: _subtitleController.text,
       );
-    }
 
-    doc.addPage(
-      pw.MultiPage(
-        pageFormat: format,
-        margin: pw.EdgeInsets.all(margin),
-        theme: pw.ThemeData.withFont(
-          base: fonts.base,
-          bold: fonts.bold,
-          italic: fonts.base,
-          boldItalic: fonts.bold,
-        ),
-        header: (context) => _header(accent, logo),
-        footer: (_) => pw.SizedBox.shrink(),
-        build: (context) => [
-          pw.Stack(
-            children: [
-              if (_showGrid) _gridOverlay(),
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  _hero(accent),
-                  if (bullets.isNotEmpty) _bullets(accent, bullets),
-                  if (paragraphs.isNotEmpty)
-                    ...paragraphs.map((p) => _paragraph(p)),
-                  if (tableRows.length > 1)
-                    _table(accent, tableRows, fonts.mono),
-                  if (_includeSignature) _signature(accent),
-                  if (_includeQr && qrValue.isNotEmpty)
-                    _qrSection(accent, qrValue),
-                  if (_notesController.text.trim().isNotEmpty)
-                    _notes(accent, _notesController.text.trim()),
-                ],
-              ),
-            ],
+      final bullets = _bulletController.text
+          .split('\n')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      final paragraphs = _summaryController.text
+          .split(RegExp(r'\n\n+'))
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      final tableRows = _tableController.text
+          .split('\n')
+          .map((row) => row.split(',').map((cell) => cell.trim()).toList())
+          .where((row) => row.where((cell) => cell.isNotEmpty).isNotEmpty)
+          .toList();
+
+      final qrValue = _qrController.text.trim();
+      final accent = _pdfColor(_accentColor);
+      final margin = _marginMm * pdf.PdfPageFormat.mm;
+
+      pw.Widget? logo;
+      if (_logoBytes != null) {
+        final image = pw.MemoryImage(_logoBytes!);
+        logo = pw.Container(
+          padding: const pw.EdgeInsets.all(4),
+          height: 48,
+          child: pw.Image(image, fit: pw.BoxFit.contain),
+        );
+      }
+
+      doc.addPage(
+        pw.MultiPage(
+          pageFormat: format,
+          margin: pw.EdgeInsets.all(margin),
+          theme: pw.ThemeData.withFont(
+            base: fonts.base,
+            bold: fonts.bold,
+            italic: fonts.base,
+            boldItalic: fonts.bold,
           ),
-        ],
-      ),
-    );
+          header: (context) => _header(accent, logo),
+          footer: (_) => pw.SizedBox.shrink(),
+          build: (context) => [
+            pw.Stack(
+              children: [
+                if (_showGrid) _gridOverlay(),
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    _hero(accent),
+                    if (bullets.isNotEmpty) _bullets(accent, bullets),
+                    if (paragraphs.isNotEmpty)
+                      ...paragraphs.map((p) => _paragraph(p)),
+                    if (tableRows.length > 1)
+                      _table(accent, tableRows, fonts.mono),
+                    if (_includeSignature) _signature(accent),
+                    if (_includeQr && qrValue.isNotEmpty)
+                      _qrSection(accent, qrValue),
+                    if (_notesController.text.trim().isNotEmpty)
+                      _notes(accent, _notesController.text.trim()),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
 
-    return doc.save();
+      return doc.save();
+    } catch (e, st) {
+      debugPrint('PDF generation failed: $e\n$st');
+      final fallback = pw.Document();
+      fallback.addPage(
+        pw.Page(
+          build: (_) => pw.Center(child: pw.Text('PDF failed to build: $e')),
+        ),
+      );
+      return fallback.save();
+    }
   }
 
   pw.Widget _header(pdf.PdfColor accent, pw.Widget? logo) {
