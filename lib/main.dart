@@ -189,17 +189,12 @@ class _PdfStudioHomeState extends State<PdfStudioHome> {
                 child: PdfPreview(
                   key: ValueKey(_stateTick),
                   allowSharing: true,
-                  allowPrinting: true,
+                  allowPrinting: false,
                   canDebug: kDebugMode,
+                  pageFormats: const {'A4': pdf.PdfPageFormat.a4},
                   initialPageFormat: pdf.PdfPageFormat.a4,
                   pdfFileName: 'pdf-lab.pdf',
                   build: _generatePdf,
-                  onPrinted: (_) => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sent to printer')),
-                  ),
-                  onShared: (_) => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Download ready')),
-                  ),
                 ),
               ),
             ),
@@ -467,24 +462,18 @@ class _PdfStudioHomeState extends State<PdfStudioHome> {
       }
 
       doc.addPage(
-        pw.MultiPage(
+        pw.Page(
           pageFormat: format,
-          margin: pw.EdgeInsets.all(margin),
-          theme: pw.ThemeData.withFont(
-            base: fonts.base,
-            bold: fonts.bold,
-            italic: fonts.base,
-            boldItalic: fonts.bold,
-          ),
-          header: (context) => _header(accent, logo),
-          footer: (_) => pw.SizedBox.shrink(),
-          build: (context) => [
-            pw.Stack(
+          build: (_) => pw.Padding(
+            padding: pw.EdgeInsets.all(margin),
+            child: pw.Stack(
               children: [
                 if (_showGrid) _gridOverlay(),
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
+                    _header(accent, logo),
+                    pw.SizedBox(height: 8),
                     _hero(accent),
                     if (bullets.isNotEmpty) _bullets(accent, bullets),
                     if (paragraphs.isNotEmpty)
@@ -500,7 +489,7 @@ class _PdfStudioHomeState extends State<PdfStudioHome> {
                 ),
               ],
             ),
-          ],
+          ),
         ),
       );
 
