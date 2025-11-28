@@ -1,11 +1,11 @@
 {
-    "name": "pdf_lab",
-    "short_name": "pdf_lab",
+    "name": "Structured PDF Builder",
+    "short_name": "PDF Builder",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1f6feb",
+    "theme_color": "#0c4a6e",
+    "description": "Structured PDF Builder - compose and export PDFs in the browser.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
