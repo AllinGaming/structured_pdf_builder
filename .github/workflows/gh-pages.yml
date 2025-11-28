@@ -40,7 +40,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Build web
-        run: flutter build web --release --base-href /${{ github.event.repository.name }}/ --pwa-strategy=none
+        run: flutter build web --release --web-renderer html --base-href /${{ github.event.repository.name }}/ --pwa-strategy=none
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
