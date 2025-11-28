@@ -1,6 +1,6 @@
 # Structured PDF Builder (Flutter web)
 
-Browser-first PDF studio: fill a form, tweak branding, upload a logo or custom font, add a QR/link, and export a polished PDF. Runs entirely as a static site (great for GitHub Pages).
+Browser-first PDF studio: fill a form, tweak branding, upload a logo or custom font, add a QR/link, and export a polished PDF. Runs entirely as a static site.
 
 [![Flutter](https://img.shields.io/badge/flutter-3.32.4-blue?logo=flutter)](https://flutter.dev)
 [![Tests](https://img.shields.io/badge/tests-pass-brightgreen?logo=githubactions)](./.github/workflows/gh-pages.yml)
